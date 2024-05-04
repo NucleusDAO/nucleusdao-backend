@@ -1,18 +1,25 @@
 const DAO = require('../models/daoModel');
+const { notifyUsersOnDaoCreation } = require('./notificationController');
 
 async function saveDao(daoInfo) {
-  const { id, members, balance, proposals } = daoInfo;
+  const { id, currentMembers, balance, currentProposalsCount } = daoInfo;
   const dao = await DAO.findOne({ id });
   // Update current values
-  dao.currentMembers = members;
-  dao.currentBalance = balance;
-  dao.currentProposalsCount = proposals;
+  if (currentMembers != undefined) {
+    dao.currentMembers = currentMembers;
+  }
+  if (balance != undefined) {
+    dao.currentBalance = balance;
+  }
+  if (currentProposalsCount != undefined) {
+    dao.currentProposalsCount = currentProposalsCount;
+  }
 
   // Push new history entry
   dao.history.push({
-    membersCount: members,
-    balance: balance,
-    proposalsCount: proposals,
+    membersCount: dao.currentMembers,
+    balance: dao.balance,
+    proposalsCount: dao.currentProposalsCount,
   });
 
   await dao.save();
@@ -28,14 +35,7 @@ exports.createDao = async (req, res) => {
       currentProposalsCount,
       currentBalance,
     } = req.body;
-    if (
-      !name ||
-      !id ||
-      !members ||
-      !currentMembers ||
-      !currentProposalsCount ||
-      !currentBalance
-    ) {
+    if (!name || !id || !members || currentMembers != undefined) {
       return res.status(400).send({ message: 'Missing required fields' });
     }
     await DAO.create({
@@ -46,7 +46,8 @@ exports.createDao = async (req, res) => {
       currentProposalsCount,
       currentBalance,
     });
-    res.status(201).send({ message: 'DAO created successfully', dao: newDao });
+    await notifyUsersOnDaoCreation({ name, id });
+    res.status(201).send({ message: 'DAO created successfully' });
   } catch (error) {
     console.error(error);
     res.status(500).send(error);
@@ -60,7 +61,8 @@ exports.updateDao = async (req, res) => {
       return res.status(400).send({ message: 'DAO ID is required' });
     }
 
-    const updatedDao = await DAO.findByIdAndUpdate(daoInfo.id);
+    const updatedDao = await DAO.findOneAndUpdate({ id: daoInfo.id }, daoInfo);
+    await saveDao(daoInfo);
 
     if (!updatedDao) {
       return res.status(404).send({ message: 'DAO not found' });
@@ -74,7 +76,7 @@ exports.updateDao = async (req, res) => {
 
 exports.getBalanceHistory = async (req, res) => {
   try {
-    const dao = await DAO.findById(req.params.id);
+    const dao = await DAO.findOne({ id: req.params.id });
     const history = dao.history.map((h) => ({
       timestamp: h.timestamp,
       balance: h.balance,
@@ -88,7 +90,7 @@ exports.getBalanceHistory = async (req, res) => {
 
 exports.getMembersHistory = async (req, res) => {
   try {
-    const dao = await DAO.findById(req.params.id);
+    const dao = await DAO.findOne({ id: req.params.id });
     const history = dao.history.map((h) => ({
       timestamp: h.timestamp,
       membersCount: h.membersCount,
@@ -102,7 +104,7 @@ exports.getMembersHistory = async (req, res) => {
 
 exports.getProposalsHistory = async (req, res) => {
   try {
-    const dao = await DAO.findById(req.params.id);
+    const dao = await DAO.findOne({ id: req.params.id });
     const history = dao.history.map((h) => ({
       timestamp: h.timestamp,
       proposalsCount: h.proposalsCount,

@@ -87,9 +87,11 @@ const daoSchema = new mongoose.Schema({
   id: String,
   members: [String],
   currentMembers: Number,
-  currentBalance: Number,
-  currentProposalsCount: Number,
+  currentBalance: { type: Number, default: 0 },
+  currentProposalsCount: { type: Number, default: 0 },
   history: { type: [historySchema], default: [] },
 });
 
 const DAO = mongoose.model('DAO', daoSchema);
+
+module.exports = DAO;

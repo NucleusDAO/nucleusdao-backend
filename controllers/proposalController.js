@@ -1,9 +1,11 @@
 const Proposal = require('../models/proposalModel');
+const { notifyUsersOnProposalCreation } = require('./notificationController');
 
 exports.createProposal = async (req, res) => {
   try {
     const newProposal = new Proposal(req.body);
     await newProposal.save();
+    await notifyUsersOnProposalCreation(req.body.daoId, req.body.id);
     res.status(201).send(newProposal);
   } catch (error) {
     console.error(error);
