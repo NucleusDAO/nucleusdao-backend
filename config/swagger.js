@@ -4,9 +4,9 @@ module.exports = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'CastleHub',
+      title: 'NucleusDAO',
       version: '1.0.0',
-      description: 'CastleHub Backend API documentation',
+      description: 'NucleusDAO Backend API documentation',
     },
     servers: [
       {
