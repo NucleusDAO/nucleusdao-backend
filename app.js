@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
-const passport = require('passport');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 // const authRoutes = require('./routes/authRoutes');
@@ -10,7 +9,6 @@ const userRoutes = require('./routes/userRoutes');
 const config = require('./config/config');
 const swaggerOptions = require('./config/swagger');
 require('./config/db');
-require('./config/passport');
 const proposalRoutes = require('./routes/proposalRoutes');
 const cryptoRoutes = require('./routes/cryptoRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
@@ -30,12 +28,10 @@ app.use(
     saveUninitialized: true,
   })
 );
-app.use(passport.initialize());
-app.use(passport.session());
 
 // Swagger setup
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 const specs = swaggerJsdoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 app.use('/proposals', proposalRoutes);
 app.use('/cryptos', cryptoRoutes);
