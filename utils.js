@@ -1,17 +1,18 @@
 const nodemailer = require('nodemailer');
+const config = require('./config/config');
 
 let transporter = nodemailer.createTransport({
-  service: 'gmail',
+  service: 'Gmail',
   auth: {
-    user: 'yourgmail@gmail.com',
-    pass: 'yourpassword',
+    user: config.mailUser,
+    pass: config.mailPassword,
   },
 });
 
 exports.sendEmail = async (recipient, subject, text) => {
   try {
     let mailOptions = {
-      from: '"Sender Name" <yourgmail@gmail.com>',
+      from: `"Nucleus DAO" <${config.mailUser}>`,
       to: recipient,
       subject: subject,
       text: text,

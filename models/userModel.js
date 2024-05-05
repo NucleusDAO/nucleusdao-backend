@@ -4,6 +4,43 @@ const mongoose = require('mongoose');
  * @swagger
  * components:
  *   schemas:
+ *     UserDTO:
+ *       type: object
+ *       required:
+ *         - address
+ *         - email
+ *         - username
+ *       properties:
+ *         address:
+ *           type: string
+ *           description: Unique address identifier for the user, required and must be unique.
+ *         email:
+ *           type: string
+ *           description: User's email address, required and must be unique.
+ *         username:
+ *           type: string
+ *           description: User's username, required and must be unique.
+ *         about:
+ *           type: string
+ *           description: A brief bio or description about the user.
+ *         profilePicture:
+ *           type: string
+ *           description: URL to the user's profile picture.
+ *         theme:
+ *           type: string
+ *           description: User's preferred theme setting.
+ *           enum:
+ *             - light
+ *             - dark
+ *             - system
+ *           default: 'light'
+ *       example:
+ *         address: "0x123456789abcdef"
+ *         email: "user@example.com"
+ *         username: "user123"
+ *         about: "An enthusiast of blockchain technologies."
+ *         profilePicture: "https://example.com/images/profile.jpg"
+ *         theme: "dark"
  *     User:
  *       type: object
  *       required:
@@ -122,14 +159,12 @@ const mongoose = require('mongoose');
  */
 
 const notificationSchema = new mongoose.Schema({
-  titile: String,
+  title: String,
   message: String,
   time: Date,
   extra: { daoId: String, daoName: String, proposalId: String },
   read: Boolean,
 });
-
-const Notification = mongoose.model('Notification', notificationSchema);
 
 const userSchema = new mongoose.Schema({
   address: {
@@ -192,4 +227,5 @@ const userSchema = new mongoose.Schema({
 });
 
 const User = mongoose.model('User', userSchema);
+
 module.exports = User;

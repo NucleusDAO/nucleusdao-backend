@@ -26,13 +26,12 @@ const mongoose = require('mongoose');
  *         balance: 10000
  *         proposalsCount: 25
  *
- *     DAO:
+ *     DAODTO:
  *       type: object
  *       required:
  *         - name
  *         - id
  *         - members
- *         - currentMembers
  *         - currentBalance
  *         - currentProposalsCount
  *       properties:
@@ -47,9 +46,38 @@ const mongoose = require('mongoose');
  *           items:
  *             type: string
  *           description: List of addresses of the members of the DAO.
- *         currentMembers:
+ *         currentBalance:
  *           type: number
- *           description: Current count of members in the DAO.
+ *           description: Current balance of the DAO.
+ *         currentProposalsCount:
+ *           type: number
+ *           description: Current count of active proposals in the DAO.
+ *       example:
+ *         name: "Genesis DAO"
+ *         id: "dao123"
+ *         members: ["0xABCDEF...", "0x123456..."]
+ *         currentBalance: 50000
+ *         currentProposalsCount: 10
+ *     DAO:
+ *       type: object
+ *       required:
+ *         - name
+ *         - id
+ *         - members
+ *         - currentBalance
+ *         - currentProposalsCount
+ *       properties:
+ *         name:
+ *           type: string
+ *           description: Name of the DAO.
+ *         id:
+ *           type: string
+ *           description: Unique identifier for the DAO.
+ *         members:
+ *           type: array
+ *           items:
+ *             type: string
+ *           description: List of addresses of the members of the DAO.
  *         currentBalance:
  *           type: number
  *           description: Current balance of the DAO.
@@ -65,7 +93,6 @@ const mongoose = require('mongoose');
  *         name: "Genesis DAO"
  *         id: "dao123"
  *         members: ["0xABCDEF...", "0x123456..."]
- *         currentMembers: 100
  *         currentBalance: 50000
  *         currentProposalsCount: 10
  *         history:
@@ -86,7 +113,6 @@ const daoSchema = new mongoose.Schema({
   name: String,
   id: String,
   members: [String],
-  currentMembers: Number,
   currentBalance: { type: Number, default: 0 },
   currentProposalsCount: { type: Number, default: 0 },
   history: { type: [historySchema], default: [] },

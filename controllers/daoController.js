@@ -2,11 +2,11 @@ const DAO = require('../models/daoModel');
 const { notifyUsersOnDaoCreation } = require('./notificationController');
 
 async function saveDao(daoInfo) {
-  const { id, currentMembers, balance, currentProposalsCount } = daoInfo;
+  const { id, members, balance, currentProposalsCount } = daoInfo;
   const dao = await DAO.findOne({ id });
   // Update current values
-  if (currentMembers != undefined) {
-    dao.currentMembers = currentMembers;
+  if (members) {
+    dao.members = members;
   }
   if (balance != undefined) {
     dao.currentBalance = balance;
@@ -17,7 +17,7 @@ async function saveDao(daoInfo) {
 
   // Push new history entry
   dao.history.push({
-    membersCount: dao.currentMembers,
+    membersCount: dao.members.length,
     balance: dao.balance,
     proposalsCount: dao.currentProposalsCount,
   });
@@ -27,22 +27,15 @@ async function saveDao(daoInfo) {
 
 exports.createDao = async (req, res) => {
   try {
-    const {
-      name,
-      id,
-      members,
-      currentMembers,
-      currentProposalsCount,
-      currentBalance,
-    } = req.body;
-    if (!name || !id || !members || currentMembers != undefined) {
+    const { name, id, members, currentProposalsCount, currentBalance } =
+      req.body;
+    if (!name || !id || !members) {
       return res.status(400).send({ message: 'Missing required fields' });
     }
     await DAO.create({
       name,
       id,
       members,
-      currentMembers,
       currentProposalsCount,
       currentBalance,
     });

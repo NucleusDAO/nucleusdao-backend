@@ -20,7 +20,7 @@ const userController = require('../controllers/userController');
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/User'
+ *             $ref: '#/components/schemas/UserDTO'
  *     responses:
  *       201:
  *         description: User created successfully
@@ -96,7 +96,7 @@ router.get('/:address', userController.getUserProfile);
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/User'
+ *             $ref: '#/components/schemas/User/DTO'
  *     responses:
  *       200:
  *         description: User profile updated successfully

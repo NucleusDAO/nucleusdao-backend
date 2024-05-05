@@ -20,7 +20,7 @@ const daoController = require('../controllers/daoController');
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/DAO'
+ *             $ref: '#/components/schemas/DAODTO'
  *     responses:
  *       201:
  *         description: DAO created successfully
@@ -49,7 +49,7 @@ router.post('', daoController.createDao);
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/DAO'
+ *             $ref: '#/components/schemas/DAODTO'
  *     responses:
  *       200:
  *         description: DAO updated successfully

@@ -81,8 +81,8 @@ exports.notifyUsersOnDaoCreation = async (dao) => {
   );
 };
 
-exports.notifyUsersOnProposalCreations = async (daoId, proposalId) => {
-  const dao = await DAO.findById(daoId);
+exports.notifyUsersOnProposalCreation = async (daoId, proposalId) => {
+  const dao = await DAO.findOne({ id: daoId });
   const emailRecievers = await User.find({
     'emailNotificationsSettings.newProposal': true,
     address: { $in: dao.members },
