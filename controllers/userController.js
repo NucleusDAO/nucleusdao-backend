@@ -9,11 +9,11 @@ exports.createUser = async (req, res) => {
     if (userExists) {
       return res.status(404).json({ message: 'User already exists.' });
     }
-    await User.create(req.body);
-    res.status(201).send({ message: 'User created successfully' });
+    const user = await User.create(req.body);
+    res.status(201).send({ message: 'User created successfully', user });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: 'Error creating user' });
   }
 };
 
@@ -47,19 +47,17 @@ exports.getUserProfile = async (req, res) => {
 exports.updateUserProfile = async (req, res) => {
   try {
     const userAddress = req.params.address;
-    const { address, username, email, about, profilePicture, theme } = req.body;
-    const user = await User.findOne({ address: userAddress });
+    const user = await User.findOneAndUpdate(
+      { address: userAddress },
+      req.body,
+      { new: true }
+    );
     if (!user) {
       return res.status(404).json({ message: 'User not found.' });
     }
-    user.address = address;
-    user.username = username;
-    user.email = email;
-    user.about = about;
-    user.profilePicture = profilePicture;
-    user.theme = theme;
-    await user.save();
-    res.status(200).json({ message: 'User profile updated successfully.' });
+    res
+      .status(200)
+      .json({ message: 'User profile updated successfully.', user });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error updating user profile.' });
@@ -69,8 +67,8 @@ exports.updateUserProfile = async (req, res) => {
 exports.updateNotificationSettings = async (req, res) => {
   try {
     const userAddress = req.params.address;
-    const { emailNotificationSettings, pushNotificationSettings } = req.body;
-    if (!emailNotificationSettings && !pushNotificationSettings) {
+    const { emailNotificationsSettings, pushNotificationsSettings } = req.body;
+    if (!emailNotificationsSettings && !pushNotificationsSettings) {
       return res
         .status(400)
         .json({ message: 'Notification settings are required.' });
@@ -79,14 +77,21 @@ exports.updateNotificationSettings = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found.' });
     }
-    if (emailNotificationSettings) {
-      user.emailNotificationSettings = emailNotificationSettings;
+    if (emailNotificationsSettings) {
+      user.emailNotificationSettings = emailNotificationsSettings;
     }
-    if (pushNotificationSettings) {
-      user.pushNotificationSettings = pushNotificationSettings;
+    if (pushNotificationsSettings) {
+      user.pushNotificationSettings = pushNotificationsSettings;
     }
+    await user.save();
+    res
+      .status(200)
+      .json(
+        { message: 'Notification settings updated successfully.' },
+        { emailNotificationsSettings, pushNotificationsSettings }
+      );
   } catch (error) {
     console.error(error);
-    res.status(500).send(error);
+    res.status(500).send({ message: 'Error updating notification settings' });
   }
 };

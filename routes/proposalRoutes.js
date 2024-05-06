@@ -69,7 +69,7 @@ router.get('/:daoId/:id', proposalController.getProposal);
 /**
  * @swagger
  * /proposals/{daoId}/{id}:
- *   put:
+ *   patch:
  *     summary: Update a proposal by ID
  *     tags: [Proposal]
  *     parameters:
@@ -99,7 +99,7 @@ router.get('/:daoId/:id', proposalController.getProposal);
  *       500:
  *         description: Error updating the proposal
  */
-router.put('/:daoId/:id', proposalController.updateProposal);
+router.patch('/:daoId/:id', proposalController.updateProposal);
 
 /**
  * @swagger

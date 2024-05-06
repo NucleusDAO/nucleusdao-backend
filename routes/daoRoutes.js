@@ -34,7 +34,7 @@ router.post('', daoController.createDao);
 /**
  * @swagger
  * /daos/{id}:
- *   put:
+ *   patch:
  *     summary: Update a DAO
  *     tags: [DAO]
  *     parameters:
@@ -60,7 +60,7 @@ router.post('', daoController.createDao);
  *       500:
  *         description: Error updating the DAO
  */
-router.put('/:id', daoController.updateDao);
+router.patch('/:id', daoController.updateDao);
 
 /**
  * @swagger

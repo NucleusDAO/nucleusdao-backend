@@ -81,7 +81,7 @@ router.get('/:address', userController.getUserProfile);
 /**
  * @swagger
  * /users/{address}:
- *   put:
+ *   patch:
  *     summary: Update a user's profile
  *     tags: [User]
  *     parameters:
@@ -105,12 +105,12 @@ router.get('/:address', userController.getUserProfile);
  *       500:
  *         description: Error updating user profile
  */
-router.put('/:address', userController.updateUserProfile);
+router.patch('/:address', userController.updateUserProfile);
 
 /**
  * @swagger
  * /users/{address}/notifications:
- *   put:
+ *   patch:
  *     summary: Update a user's notification settings
  *     tags: [User]
  *     parameters:
@@ -141,7 +141,7 @@ router.put('/:address', userController.updateUserProfile);
  *       500:
  *         description: Error updating notification settings
  */
-router.put(
+router.patch(
   '/:address/notifications',
   userController.updateNotificationSettings
 );

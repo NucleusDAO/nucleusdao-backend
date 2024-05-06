@@ -32,7 +32,7 @@ exports.createDao = async (req, res) => {
     if (!name || !id || !members) {
       return res.status(400).send({ message: 'Missing required fields' });
     }
-    await DAO.create({
+    const dao = await DAO.create({
       name,
       id,
       members,
@@ -40,10 +40,10 @@ exports.createDao = async (req, res) => {
       currentBalance,
     });
     await notifyUsersOnDaoCreation({ name, id });
-    res.status(201).send({ message: 'DAO created successfully' });
+    res.status(201).send({ message: 'DAO created successfully', dao });
   } catch (error) {
-    console.error(error);
-    res.status(500).send(error);
+    console.error('Error creating DAO', error);
+    res.status(500).send({ message: 'Error creating DAO' });
   }
 };
 
@@ -62,8 +62,8 @@ exports.updateDao = async (req, res) => {
     }
     res.send({ message: 'DAO successfully updated', dao: updatedDao });
   } catch (error) {
-    console.error(error);
-    res.status(500).send(error);
+    console.error('Error updating DAO', error);
+    res.status(500).send({ message: 'Error updating DAO' });
   }
 };
 
@@ -76,8 +76,8 @@ exports.getBalanceHistory = async (req, res) => {
     }));
     res.json(history);
   } catch (error) {
-    console.error(error);
-    res.status(500).send(error);
+    console.error('Error getting balance history', error);
+    res.status(500).send({ message: 'Error getting balance history' });
   }
 };
 
@@ -90,8 +90,8 @@ exports.getMembersHistory = async (req, res) => {
     }));
     res.json(history);
   } catch (error) {
-    console.error(error);
-    res.status(500).send(error);
+    console.error('Error getting members history', error);
+    res.status(500).send({ message: 'Error getting members history' });
   }
 };
 
@@ -104,7 +104,7 @@ exports.getProposalsHistory = async (req, res) => {
     }));
     res.json(history);
   } catch (error) {
-    console.error(error);
-    res.status(500).send(error);
+    console.error('Error getting proposals history', error);
+    res.status(500).send({ message: 'Error getting proposals history' });
   }
 };

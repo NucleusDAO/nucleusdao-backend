@@ -6,10 +6,12 @@ exports.createProposal = async (req, res) => {
     const newProposal = new Proposal(req.body);
     await newProposal.save();
     await notifyUsersOnProposalCreation(req.body.daoId, req.body.id);
-    res.status(201).send(newProposal);
+    res
+      .status(201)
+      .send({ message: 'Proposal successfully created', newProposal });
   } catch (error) {
     console.error(error);
-    res.status(500).send(error);
+    res.status(500).send({ message: 'Error creating proposal' });
   }
 };
 
@@ -23,10 +25,10 @@ exports.updateProposal = async (req, res) => {
     if (!updatedProposal) {
       return res.status(404).send({ message: 'Proposal not found' });
     }
-    res.send(updatedProposal);
+    res.send({ message: 'Proposal updated successfully', updatedProposal });
   } catch (error) {
     console.error(error);
-    res.status(500).send(error);
+    res.status(500).send({ message: 'Error updating proposal' });
   }
 };
 
@@ -39,10 +41,10 @@ exports.getProposal = async (req, res) => {
     if (!proposal) {
       return res.status(404).send({ message: 'Proposal not found' });
     }
-    res.send(proposal);
+    res.status.send(proposal);
   } catch (error) {
     console.error(error);
-    res.status(500).send(error);
+    res.status(500).send({ message: 'Error getting proposal' });
   }
 };
 
@@ -52,6 +54,6 @@ exports.getProposals = async (req, res) => {
     res.status(200).send(proposals);
   } catch (error) {
     console.error(error);
-    res.status(500).send(error);
+    res.status(500).send({ message: 'Error getting all proposals' });
   }
 };

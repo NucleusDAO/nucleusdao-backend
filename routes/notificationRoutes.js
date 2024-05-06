@@ -66,7 +66,7 @@ router.get('/unread/:address', notificationController.getUnreadNotifications);
 /**
  * @swagger
  * /notifications/mark-read/{address}:
- *   put:
+ *   post:
  *     summary: Mark all notifications as read for a specified user
  *     tags: [Notification]
  *     parameters:
@@ -84,6 +84,41 @@ router.get('/unread/:address', notificationController.getUnreadNotifications);
  *       500:
  *         description: Error marking notifications as read
  */
-router.put('/mark-read/:address', notificationController.markNotificationsRead);
+router.post(
+  '/mark-read/:address',
+  notificationController.markNotificationsRead
+);
+
+/**
+ * @swagger
+ * /notifications/mark-read/{address}/{notificationId}:
+ *   post:
+ *     summary: Mark a notification as read for a specified user
+ *     tags: [Notification]
+ *     parameters:
+ *       - in: path
+ *         name: address
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The user's address to mark a notification as read
+ *       - in: path
+ *         name: notificationId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The id of the notification to mark as read
+ *     responses:
+ *       200:
+ *         description: Notification marked as read successfully
+ *       404:
+ *         description: User not found or already marked as read
+ *       500:
+ *         description: Error marking notification as read
+ */
+router.post(
+  '/mark-read/:address/:notificationId',
+  notificationController.markNotificationsRead
+);
 
 module.exports = router;

@@ -1,5 +1,5 @@
 const User = require('../models/userModel');
-const DAO = require('../models/daoModel'); // Assuming you have this model
+const DAO = require('../models/daoModel');
 const { sendEmail } = require('../utils');
 
 exports.getAllNotifications = async (req, res) => {
@@ -10,7 +10,8 @@ exports.getAllNotifications = async (req, res) => {
     );
     res.send(notifications.notifications);
   } catch (error) {
-    res.status(500).send(error);
+    console.error('Error fetching all notifications', error);
+    res.status(500).send({ message: 'Error marking notifications as read' });
   }
 };
 
@@ -25,15 +26,16 @@ exports.getUnreadNotifications = async (req, res) => {
     );
     res.send(unreadNotifications);
   } catch (error) {
-    res.status(500).send(error);
+    console.error('Error in fetching unread notifications:', error);
+    res.status(500).send({ message: 'Error fetching unread notifications' });
   }
 };
 
 exports.markNotificationsRead = async (req, res) => {
   try {
-    const userAddress = req.params.address;
+    const address = req.params.address;
     const result = await User.updateOne(
-      { address: userAddress },
+      { address },
       { $set: { 'notifications.$[].read': true } }
     );
 
@@ -48,7 +50,29 @@ exports.markNotificationsRead = async (req, res) => {
     console.error('Error in marking notifications as read:', error);
     res.status(500).send({
       message: 'Failed to mark notifications as read',
-      error: error.message,
+    });
+  }
+};
+
+exports.markNotificationRead = async (req, res) => {
+  try {
+    const { address, notificationId } = req.params;
+    const result = await User.updateOne(
+      { address, 'notifications._id': notificationId },
+      { $set: { 'notifications.$.read': true } }
+    );
+
+    if (result.nModified === 0) {
+      return res
+        .status(404)
+        .json({ message: 'Notification not found or already marked as read' });
+    }
+
+    res.json({ message: 'Notification marked as read' });
+  } catch (error) {
+    console.error('Error in marking notification as read:', error);
+    res.status(500).json({
+      message: 'Failed to mark notification as read',
     });
   }
 };
