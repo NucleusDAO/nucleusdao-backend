@@ -13,6 +13,7 @@ const proposalRoutes = require('./routes/proposalRoutes');
 const cryptoRoutes = require('./routes/cryptoRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const daoRoutes = require('./routes/daoRoutes');
+const waitlistRoutes = require('./routes/waitlistRoutes');
 
 const app = express();
 
@@ -38,6 +39,7 @@ app.use('/cryptos', cryptoRoutes);
 app.use('/notifications', notificationRoutes);
 app.use('/daos', daoRoutes);
 app.use('/users', userRoutes);
+app.use('/waitlists', waitlistRoutes);
 
 app.get('/', (req, res) => {
   res.status(200).json({ message: 'Welcome to server' });
