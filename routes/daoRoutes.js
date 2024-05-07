@@ -75,6 +75,12 @@ router.patch('/:id', daoController.updateDao);
  *         schema:
  *           type: string
  *         description: The DAO ID
+ *       - in: query
+ *         name: timeframe
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: The timeframe of the data
  *     responses:
  *       200:
  *         description: Balance history retrieved successfully
@@ -104,6 +110,12 @@ router.get('/:id/balance-history', daoController.getBalanceHistory);
  *         schema:
  *           type: string
  *         description: The DAO ID
+ *       - in: query
+ *         name: timeframe
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: The timeframe of the data
  *     responses:
  *       200:
  *         description: Members count history retrieved successfully
@@ -133,6 +145,12 @@ router.get('/:id/members-history', daoController.getMembersHistory);
  *         schema:
  *           type: string
  *         description: The DAO ID
+ *       - in: query
+ *         name: timeframe
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: The timeframe of the data
  *     responses:
  *       200:
  *         description: Proposals count history retrieved successfully
