@@ -13,7 +13,6 @@ const cryptoRoutes = require('./routes/cryptoRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const daoRoutes = require('./routes/daoRoutes');
 const waitlistRoutes = require('./routes/waitlistRoutes');
-const { updateDaoDB } = require('./controllers/daoController');
 
 const app = express();
 
@@ -55,6 +54,5 @@ mongoose
         `API documentation available at ${config.serverUrl}/api-docs`
       );
     });
-    updateDaoDB();
   })
   .catch((err) => console.log(err));

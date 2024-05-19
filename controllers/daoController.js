@@ -365,7 +365,6 @@ handleDaoTransaction = async (payload, error) => {
 };
 
 const getDAOs = async () => {
-  console.log('updating daos...');
   const daos = [];
   const contract = await aeSdk.initializeContract({
     aci: nucleusdaoACI,
@@ -423,16 +422,16 @@ const getDAOs = async () => {
 };
 
 // Subscribe to Nucleus DAO and existing DAOs
-exports.updateDaoDB = async () => {
-  const subscriber = new _MiddlewareSubscriber(
-    'wss://testnet.aeternity.io/mdw/v2/websocket'
-  );
-  subscriber.subscribeObject(nucleusdao, transactionCallback);
+// exports.updateDaoDB = async () => {
+//   const subscriber = new _MiddlewareSubscriber(
+//     'wss://testnet.aeternity.io/mdw/v2/websocket'
+//   );
+//   subscriber.subscribeObject(nucleusdao, transactionCallback);
 
-  subscriber.reconnect();
+//   subscriber.reconnect();
 
-  getDAOs();
-};
+//   getDAOs();
+// };
 
 cron.schedule('*/10 * * * * *', () => {
   getDAOs();
