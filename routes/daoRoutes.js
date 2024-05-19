@@ -9,58 +9,58 @@ const daoController = require('../controllers/daoController');
  *   description: DAO management and history operations
  */
 
-/**
- * @swagger
- * /daos:
- *   post:
- *     summary: Create a new DAO
- *     tags: [DAO]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/DAODTO'
- *     responses:
- *       201:
- *         description: DAO created successfully
- *       400:
- *         description: Missing required fields
- *       500:
- *         description: Error creating the DAO
- */
-router.post('', daoController.createDao);
+// /**
+//  * @swagger
+//  * /daos:
+//  *   post:
+//  *     summary: Create a new DAO
+//  *     tags: [DAO]
+//  *     requestBody:
+//  *       required: true
+//  *       content:
+//  *         application/json:
+//  *           schema:
+//  *             $ref: '#/components/schemas/DAODTO'
+//  *     responses:
+//  *       201:
+//  *         description: DAO created successfully
+//  *       400:
+//  *         description: Missing required fields
+//  *       500:
+//  *         description: Error creating the DAO
+//  */
+// router.post('', daoController.createDao);
 
-/**
- * @swagger
- * /daos/{id}:
- *   patch:
- *     summary: Update a DAO
- *     tags: [DAO]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: The DAO ID
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/DAODTO'
- *     responses:
- *       200:
- *         description: DAO updated successfully
- *       400:
- *         description: DAO ID is required
- *       404:
- *         description: DAO not found
- *       500:
- *         description: Error updating the DAO
- */
-router.patch('/:id', daoController.updateDao);
+// /**
+//  * @swagger
+//  * /daos/{id}:
+//  *   patch:
+//  *     summary: Update a DAO
+//  *     tags: [DAO]
+//  *     parameters:
+//  *       - in: path
+//  *         name: id
+//  *         required: true
+//  *         schema:
+//  *           type: string
+//  *         description: The DAO ID
+//  *     requestBody:
+//  *       required: true
+//  *       content:
+//  *         application/json:
+//  *           schema:
+//  *             $ref: '#/components/schemas/DAODTO'
+//  *     responses:
+//  *       200:
+//  *         description: DAO updated successfully
+//  *       400:
+//  *         description: DAO ID is required
+//  *       404:
+//  *         description: DAO not found
+//  *       500:
+//  *         description: Error updating the DAO
+//  */
+// router.patch('/:id', daoController.updateDao);
 
 /**
  * @swagger
@@ -166,5 +166,32 @@ router.get('/:id/members-history', daoController.getMembersHistory);
  *         description: Error fetching proposals count history
  */
 router.get('/:id/proposals-history', daoController.getProposalsHistory);
+
+/**
+ * @swagger
+ * /daos/{id}/transactions-history:
+ *   get:
+ *     summary: Retrieve transactions history for a DAO
+ *     tags: [DAO]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The DAO ID
+ *     responses:
+ *       200:
+ *         description: Transaction history retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *       404:
+ *         description: DAO not found
+ *       500:
+ *         description: Error fetching transaction history
+ */
+router.get('/:id/transactions-history', daoController.getTransactionsHistory);
 
 module.exports = router;

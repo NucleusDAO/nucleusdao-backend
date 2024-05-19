@@ -4,16 +4,16 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const mongoose = require('mongoose');
 // const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const config = require('./config/config');
 const swaggerOptions = require('./config/swagger');
-require('./config/db');
-const proposalRoutes = require('./routes/proposalRoutes');
 const cryptoRoutes = require('./routes/cryptoRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const daoRoutes = require('./routes/daoRoutes');
 const waitlistRoutes = require('./routes/waitlistRoutes');
+const { updateDaoDB } = require('./controllers/daoController');
 
 const app = express();
 
@@ -34,7 +34,6 @@ app.use(
 const specs = swaggerJsdoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
-app.use('/proposals', proposalRoutes);
 app.use('/cryptos', cryptoRoutes);
 app.use('/notifications', notificationRoutes);
 app.use('/daos', daoRoutes);
@@ -46,7 +45,16 @@ app.get('/', (req, res) => {
 });
 
 const PORT = config.port || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-  console.log(`API documentation available at ${config.serverUrl}/api-docs`);
-});
+mongoose
+  .connect(config.mongoURI)
+  .then(() => {
+    console.log('Successfully connected to database!');
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+      console.log(
+        `API documentation available at ${config.serverUrl}/api-docs`
+      );
+    });
+    updateDaoDB();
+  })
+  .catch((err) => console.log(err));

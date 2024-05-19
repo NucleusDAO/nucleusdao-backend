@@ -112,6 +112,7 @@ const historySchema = new mongoose.Schema({
 const daoSchema = new mongoose.Schema({
   name: String,
   id: String,
+  contractAddress: String,
   members: [String],
   currentBalance: { type: Number, default: 0 },
   currentProposalsCount: { type: Number, default: 0 },
