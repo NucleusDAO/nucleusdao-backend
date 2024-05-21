@@ -433,6 +433,6 @@ const getDAOs = async () => {
 //   getDAOs();
 // };
 
-cron.schedule('*/10 * * * * *', () => {
-  getDAOs();
-});
+// cron.schedule('*/10 * * * * *', () => {
+//  getDAOs();
+//});
