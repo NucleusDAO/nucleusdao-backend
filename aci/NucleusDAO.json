@@ -103,7 +103,7 @@
           "arguments": [{ "name": "_proposalId", "type": "int" }],
           "name": "executeProposal",
           "payable": false,
-          "returns": { "tuple": [] },
+          "returns": "DAO.proposal",
           "stateful": true
         },
         {
