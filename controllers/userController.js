@@ -12,8 +12,17 @@ exports.createUser = async (req, res) => {
     const user = await User.create(req.body);
     res.status(201).send({ message: 'User created successfully', user });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Error creating user' });
+    if (error.code === 11000) {
+      const duplicateField = Object.keys(error.keyValue)[0];
+      return res
+        .status(409)
+        .json({
+          message: `Duplicate key error: ${duplicateField} already exists`,
+        });
+    } else {
+      console.error(error);
+      res.status(500).json({ message: 'Error creating user' });
+    }
   }
 };
 
