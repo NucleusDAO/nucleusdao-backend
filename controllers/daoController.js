@@ -13,7 +13,7 @@ const {
 } = require('./notificationController');
 const nucleusdaoACI = require('../aci/NucleusDAO.json');
 
-const nucleusdao = 'ct_2nMGyyJos1nB7kBfXi7j4Uq33XkMKvqzMYhe4LDw5JabmdUXMo';
+const nucleusdao = 'ct_yu1VWgPe3FrQTE1QesiiEB48Gw1dmrJTj8MSciNS5aoFTz6NY';
 const TESTNET_NODE_URL = 'https://testnet.aeternity.io';
 const MAINNET_NODE_URL = 'https://mainnet.aeternity.io';
 const COMPILER_URL = 'https://compiler.aepps.com';
