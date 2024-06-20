@@ -1,12 +1,12 @@
-var { SendMailClient } = require('zeptomail');
+const { SendMailClient } = require('zeptomail');
+const config = require('./config/config');
 
 const DAOBASEURL = 'https://app.nucleusdao.com/daos';
 
 const url = 'api.zeptomail.com/';
-const token =
-  'Zoho-enczapikey wSsVR612/RPyWKt9nzKsdug7n1pRB1+gHEUr2VT143KuGfjGocc6nkLOAQCkSPAcEG5sQjITprN8kEtW1TMMjNh4ylADDSiF9mqRe1U4J3x17qnvhDzDXG5bmxeKLooOxAxvmWdkG8Em+g==';
+const token = config.sendMailToken;
 
-let client = new SendMailClient({ url, token });
+const client = new SendMailClient({ url, token });
 
 exports.sendEmail = async (recipient, subject, body) => {
   const htmlBody = buildHtmlBody(body);
