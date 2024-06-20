@@ -113,6 +113,7 @@ const daoSchema = new mongoose.Schema({
   name: String,
   id: String,
   contractAddress: String,
+  image: String,
   members: [String],
   currentBalance: { type: Number, default: 0 },
   currentProposalsCount: { type: Number, default: 0 },

@@ -13,7 +13,7 @@ const {
 } = require('./notificationController');
 const nucleusdaoACI = require('../aci/NucleusDAO.json');
 
-const nucleusdao = 'ct_yu1VWgPe3FrQTE1QesiiEB48Gw1dmrJTj8MSciNS5aoFTz6NY';
+const nucleusdao = 'ct_tty8uyUaw1LCCveugDympVzdWmcJntGG1wbFPiurqYR5m3iss';
 const TESTNET_NODE_URL = 'https://testnet.aeternity.io';
 const MAINNET_NODE_URL = 'https://mainnet.aeternity.io';
 const COMPILER_URL = 'https://compiler.aepps.com';
@@ -113,7 +113,10 @@ function formatData(history, timeframe = 'daily') {
 exports.getBalanceHistory = async (req, res) => {
   try {
     const { timeframe } = req.query;
+    const { id } = req.params;
+    console.log({ id, timeframe });
     let dao = await DAO.findOne({ id: req.params.id });
+    console.log({ dao });
     if (!dao) {
       dao = { history: [] };
     }
@@ -124,6 +127,7 @@ exports.getBalanceHistory = async (req, res) => {
       })),
       timeframe
     );
+    console.log({ formattedHistory });
     res.json(
       formattedHistory.map((balanceHistory) => {
         balanceHistory.value = formatAmount(balanceHistory.value, {
@@ -224,6 +228,8 @@ exports.createDao = async (req, res) => {
       name,
       id,
       members,
+      image,
+      description,
       contractAddress,
       currentProposalsCount,
       currentBalance,
@@ -235,6 +241,8 @@ exports.createDao = async (req, res) => {
       name,
       id,
       members,
+      image,
+      description,
       contractAddress,
       currentProposalsCount,
       currentBalance,
@@ -246,7 +254,7 @@ exports.createDao = async (req, res) => {
         },
       ],
     });
-    await notifyUsersOnDaoCreation({ name, id });
+    await notifyUsersOnDaoCreation({ name, id, description, image });
     res.status(201).send({ message: 'DAO created successfully', dao });
   } catch (error) {
     console.error('Error creating DAO', error);
@@ -265,7 +273,6 @@ exports.updateDao = async (req, res) => {
     if (!updatedDao) {
       return res.status(404).send({ message: 'DAO not found' });
     }
-    console.log(updatedDao.history);
     res.send({ message: 'DAO successfully updated', dao: updatedDao });
   } catch (error) {
     console.error('Error updating DAO', error);
@@ -340,6 +347,8 @@ const transactionCallback = (payload, error) => {
     DAO.create({
       name,
       id,
+      description,
+      image,
       members,
       contractAddress,
       currentProposalsCount: 0,
@@ -351,7 +360,7 @@ const transactionCallback = (payload, error) => {
           proposalsCount: 0,
         },
       ],
-    }).catch((error) => console.log('Error creating dao', error));
+    }).catch((error) => console.error('Error creating dao', error));
     notifyUsersOnDaoCreation(newDao);
   }
 };
@@ -385,39 +394,43 @@ const getDAOs = async () => {
       name,
       id,
       members,
+      image,
+      description,
       contractAddress,
       totalProposals: currentProposalsCount,
       balance: currentBalance,
     } = dao;
-    DAO.findOne({ id }).then((existingDao) => {
-      if (!existingDao) {
-        notifyUsersOnDaoCreation({ name, id });
-        DAO.create({
-          name,
-          id,
-          contractAddress,
-          members,
-          currentProposalsCount,
-          currentBalance,
-          history: [
-            {
-              membersCount: members.length,
-              balance: currentBalance ?? 0,
-              proposalsCount: currentProposalsCount ?? 0,
-            },
-          ],
-        }).catch((error) => console.log('Error creating dao', error));
-      } else {
-        if (currentProposalsCount > existingDao.currentProposalsCount) {
-          notifyUsersOnProposalCreation(id, currentProposalsCount - 1);
-        }
-        saveDao(id, {
-          members,
-          balance: currentBalance,
-          currentProposalsCount,
-        });
+    const existingDao = DAO.findOne({ id });
+    if (!existingDao) {
+      notifyUsersOnDaoCreation({ name, id, image, description });
+      DAO.create({
+        name,
+        id,
+        description,
+        contractAddress,
+        image,
+        members,
+        currentProposalsCount,
+        currentBalance,
+        history: [
+          {
+            membersCount: members.length,
+            balance: currentBalance ?? 0,
+            proposalsCount: currentProposalsCount ?? 0,
+          },
+        ],
+      }).catch((error) => console.error('Error creating dao', error));
+    } else {
+      await DAO.updateOne({ id }, { name, image, description });
+      if (currentProposalsCount > existingDao.currentProposalsCount) {
+        notifyUsersOnProposalCreation(id, currentProposalsCount - 1);
       }
-    });
+      saveDao(id, {
+        members,
+        balance: currentBalance,
+        currentProposalsCount,
+      });
+    }
   });
 };
 

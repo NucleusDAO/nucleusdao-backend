@@ -1,4 +1,5 @@
 const EarlyUser = require('../models/earlyUserModel');
+const { sendWaitlistEmail } = require('../utils');
 
 exports.addUserToWaitlist = async (req, res) => {
   try {
@@ -7,6 +8,7 @@ exports.addUserToWaitlist = async (req, res) => {
       return res.status(400).json('email is required');
     }
     await EarlyUser.updateOne({ email }, { email }, { upsert: true });
+    await sendWaitlistEmail(email);
     res.status(201).json({
       message: 'Email successfully added to waitlist',
       email,

@@ -29,7 +29,8 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-local": "^1.0.0",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.0"
+    "swagger-ui-express": "^5.0.0",
+    "zeptomail": "^6.0.0"
   },
   "devDependencies": {
     "jest": "^29.7.0",

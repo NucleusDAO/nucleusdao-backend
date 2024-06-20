@@ -1,6 +1,9 @@
 const User = require('../models/userModel');
 const DAO = require('../models/daoModel');
-const { sendEmail } = require('../utils');
+const {
+  sendDAOCreatedEmails,
+  sendProposalsCreatedEmails,
+} = require('../utils');
 
 exports.getAllNotifications = async (req, res) => {
   try {
@@ -97,12 +100,7 @@ exports.notifyUsersOnDaoCreation = async (dao) => {
   );
 
   // Prepare and send email notifications
-  const recipients = emailRecievers.map((user) => user.email).join(',');
-  sendEmail(
-    recipients,
-    'New DAO Created',
-    `A new DAO named ${dao.name} has been created.`
-  );
+  sendDAOCreatedEmails(dao, emailRecievers);
 };
 
 exports.notifyUsersOnProposalCreation = async (daoId, proposalId) => {
@@ -129,10 +127,5 @@ exports.notifyUsersOnProposalCreation = async (daoId, proposalId) => {
   );
 
   // Prepare and send email notifications
-  const recipients = emailRecievers.map((user) => user.email).join(',');
-  sendEmail(
-    recipients,
-    'New Proposal Created',
-    `A new proposal has been created in DAO: ${dao.name}.`
-  );
+  sendProposalsCreatedEmails(dao, emailRecievers);
 };
