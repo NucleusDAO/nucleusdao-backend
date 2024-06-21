@@ -400,7 +400,7 @@ const getDAOs = async () => {
       totalProposals: currentProposalsCount,
       balance: currentBalance,
     } = dao;
-    const existingDao = DAO.findOne({ id });
+    const existingDao = await DAO.findOne({ id });
     if (!existingDao) {
       notifyUsersOnDaoCreation({ name, id, image, description });
       DAO.create({
