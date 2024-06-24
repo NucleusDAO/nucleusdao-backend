@@ -8,22 +8,17 @@ const token = config.sendMailToken;
 
 const client = new SendMailClient({ url, token });
 
-exports.sendEmail = async (recipient, subject, body) => {
-  const htmlBody = buildHtmlBody(body);
+exports.sendEmail = async (recipient, subject, body, cc) => {
+  const htmlBody = buildHTMLTemplate(body);
   try {
     client
-      .sendBatchMail({
+      .sendMail({
         from: {
           address: 'noreply@nucleusdao.com',
           name: 'NucleusDAO',
         },
         to: recipient,
-        reply_to: [
-          {
-            address: 'support@nucleusdao.com',
-            name: 'NucleusDAO Team',
-          },
-        ],
+        cc,
         subject: subject,
         htmlbody: htmlBody,
 
@@ -32,7 +27,7 @@ exports.sendEmail = async (recipient, subject, body) => {
         client_reference: '',
       })
       .then((resp) => console.log('Email successfully sent'))
-      .catch((error) => console.log('error'));
+      .catch((error) => console.log(error.error));
   } catch (error) {
     console.error('Failed to send email:', error);
     throw error;
@@ -237,7 +232,7 @@ const buildHTMLTemplate = (htmlBody) => {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Welcome to the NucleusDAO Waitlist!</title>
+    <title>NucleusDAO!</title>
   </head>
   <body
     style="
