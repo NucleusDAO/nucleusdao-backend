@@ -13,14 +13,14 @@ const {
 } = require('./notificationController');
 const nucleusdaoACI = require('../aci/NucleusDAO.json');
 
-const nucleusdao = 'ct_tty8uyUaw1LCCveugDympVzdWmcJntGG1wbFPiurqYR5m3iss';
-const TESTNET_NODE_URL = 'https://testnet.aeternity.io';
+const nucleusdao = 'ct_yDcPop9r72KvwPAQB61gmYvhZHYogVuAWeheQ5zL8J5cwWPY4';
+// const TESTNET_NODE_URL = 'https://testnet.aeternity.io';
 const MAINNET_NODE_URL = 'https://mainnet.aeternity.io';
 const COMPILER_URL = 'https://compiler.aepps.com';
 const aeSdk = new AeSdkAepp({
   nodes: [
-    { name: 'testnet', instance: new Node(TESTNET_NODE_URL) },
-    // { name: 'mainnet', instance: new Node(MAINNET_NODE_URL) },
+    // { name: 'testnet', instance: new Node(TESTNET_NODE_URL) },
+    { name: 'mainnet', instance: new Node(MAINNET_NODE_URL) },
   ],
 });
 
@@ -193,7 +193,7 @@ exports.getTransactionsHistory = async (req, res) => {
       return res.json([]);
     }
     const apiRes = await fetch(
-      `https://testnet.aeternity.io/mdw/v2/txs?contract=${dao.contractAddress}`
+      `https://mainnet.aeternity.io/mdw/v2/txs?contract=${dao.contractAddress}`
     );
     const transactions = await apiRes.json();
     const transactionHistory = [];
