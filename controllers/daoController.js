@@ -278,35 +278,39 @@ exports.updateDao = async (req, res) => {
 };
 
 async function saveDao(id, daoInfo) {
-  const { members, balance, currentProposalsCount } = daoInfo;
-  const dao = await DAO.findOne({ id });
-  if (
-    (!members || dao.members.length == members.length) &&
-    (!balance || dao.balance == balance) &&
-    (currentProposalsCount ||
-      dao.currentProposalsCount == currentProposalsCount)
-  ) {
-    return;
-  }
-  // Update current values
-  if (members) {
-    dao.members = members;
-  }
-  if (balance != undefined) {
-    dao.currentBalance = balance;
-  }
-  if (currentProposalsCount != undefined) {
-    dao.currentProposalsCount = currentProposalsCount;
-  }
+  try {
+    const { members, balance, currentProposalsCount } = daoInfo;
+    const dao = await DAO.findOne({ id });
+    if (
+      (!members || dao.members.length == members.length) &&
+      (!balance || dao.currentBalance == balance) &&
+      (currentProposalsCount ||
+        dao.currentProposalsCount == currentProposalsCount)
+    ) {
+      return;
+    }
+    // Update current values
+    if (members) {
+      dao.members = members;
+    }
+    if (balance != undefined) {
+      dao.currentBalance = balance;
+    }
+    if (currentProposalsCount != undefined) {
+      dao.currentProposalsCount = currentProposalsCount;
+    }
 
-  // Push new history entry
-  dao.history.push({
-    membersCount: dao.members.length,
-    balance: dao.currentBalance,
-    proposalsCount: dao.currentProposalsCount,
-  });
+    // Push new history entry
+    dao.history.push({
+      membersCount: dao.members.length,
+      balance: dao.currentBalance,
+      proposalsCount: dao.currentProposalsCount,
+    });
 
-  await dao.save();
+    await dao.save();
+  } catch (error) {
+    console.error("Error saving DAO", error);
+  }
 }
 
 const transactionCallback = (payload, error) => {

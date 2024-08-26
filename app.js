@@ -17,6 +17,9 @@ const daoRoutes = require("./routes/daoRoutes");
 const waitlistRoutes = require("./routes/waitlistRoutes");
 const appRoutes = require("./routes/appRoutes");
 
+const User = require("./models/userModel");
+const DAO = require("./models/daoModel");
+
 const app = express();
 
 // Middleware
