@@ -1,31 +1,31 @@
-const moment = require('moment');
-const cron = require('node-cron');
+const moment = require("moment");
+const cron = require("node-cron");
 const {
   _MiddlewareSubscriber,
   AeSdkAepp,
   Node,
   formatAmount,
-} = require('@aeternity/aepp-sdk');
-const DAO = require('../models/daoModel');
+} = require("@aeternity/aepp-sdk");
+const DAO = require("../models/daoModel");
 const {
   notifyUsersOnDaoCreation,
   notifyUsersOnProposalCreation,
-} = require('./notificationController');
-const nucleusdaoACI = require('../aci/NucleusDAO.json');
+} = require("./notificationController");
+const nucleusdaoACI = require("../aci/NucleusDAO.json");
 
-const nucleusdao = 'ct_yDcPop9r72KvwPAQB61gmYvhZHYogVuAWeheQ5zL8J5cwWPY4';
+const nucleusdao = "ct_yDcPop9r72KvwPAQB61gmYvhZHYogVuAWeheQ5zL8J5cwWPY4";
 // const TESTNET_NODE_URL = 'https://testnet.aeternity.io';
-const MAINNET_NODE_URL = 'https://mainnet.aeternity.io';
-const COMPILER_URL = 'https://compiler.aepps.com';
+const MAINNET_NODE_URL = "https://mainnet.aeternity.io";
+const COMPILER_URL = "https://compiler.aepps.com";
 const aeSdk = new AeSdkAepp({
   nodes: [
     // { name: 'testnet', instance: new Node(TESTNET_NODE_URL) },
-    { name: 'mainnet', instance: new Node(MAINNET_NODE_URL) },
+    { name: "mainnet", instance: new Node(MAINNET_NODE_URL) },
   ],
 });
 
 // Helper function to format data based on the specified timeframe
-function formatData(history, timeframe = 'daily') {
+function formatData(history, timeframe = "daily") {
   const now = moment();
   let start;
   let formattedHistory = [];
@@ -33,24 +33,24 @@ function formatData(history, timeframe = 'daily') {
   let interval;
 
   switch (timeframe) {
-    case 'daily':
-      start = moment().subtract(23, 'hours').startOf('hour'); // Start from 23 hours ago
-      unit = 'hours';
+    case "daily":
+      start = moment().subtract(23, "hours").startOf("hour"); // Start from 23 hours ago
+      unit = "hours";
       interval = 24;
       break;
-    case 'weekly':
-      start = moment().subtract(6, 'days').startOf('day'); // Start from 6 days ago
-      unit = 'days';
+    case "weekly":
+      start = moment().subtract(6, "days").startOf("day"); // Start from 6 days ago
+      unit = "days";
       interval = 7;
       break;
-    case 'monthly':
-      start = moment().subtract(3, 'weeks').startOf('isoWeek'); // Start from 3 weeks ago
-      unit = 'weeks';
+    case "monthly":
+      start = moment().subtract(3, "weeks").startOf("isoWeek"); // Start from 3 weeks ago
+      unit = "weeks";
       interval = 4;
       break;
-    case 'yearly':
-      start = moment().subtract(11, 'months').startOf('month'); // Start from 11 months ago
-      unit = 'months';
+    case "yearly":
+      start = moment().subtract(11, "months").startOf("month"); // Start from 11 months ago
+      unit = "months";
       interval = 12;
       break;
     default:
@@ -59,13 +59,13 @@ function formatData(history, timeframe = 'daily') {
 
   formattedHistory = new Array(interval).fill(null).map((_, index) => ({
     title:
-      unit == 'weeks'
+      unit == "weeks"
         ? `Week ${index + 1}`
         : start
             .clone()
             .add(index, unit)
             .format(
-              unit === 'hours' ? 'H:mm' : unit === 'days' ? 'dddd' : 'MMMM'
+              unit === "hours" ? "H:mm" : unit === "days" ? "dddd" : "MMMM"
             ),
     value: null, // Initially null, will be filled later
   }));
@@ -74,7 +74,7 @@ function formatData(history, timeframe = 'daily') {
   const formattedHistoryValues = {};
   history.forEach((data) => {
     const momentTime = moment(data.timestamp);
-    if (momentTime.isBetween(start, now, unit, '[]')) {
+    if (momentTime.isBetween(start, now, unit, "[]")) {
       const index = momentTime.diff(start, unit);
       if (index < interval) {
         if (formattedHistoryValues[index]) {
@@ -97,7 +97,7 @@ function formatData(history, timeframe = 'daily') {
   });
 
   // Fill in gaps by propagating the last seen value
-  let lastValue = '0'; // Default value if no data exists at all, adjust as necessary
+  let lastValue = "0"; // Default value if no data exists at all, adjust as necessary
   for (let i = 0; i < formattedHistory.length; i++) {
     if (formattedHistory[i].value !== null) {
       lastValue = formattedHistory[i].value; // Update last seen value
@@ -114,9 +114,7 @@ exports.getBalanceHistory = async (req, res) => {
   try {
     const { timeframe } = req.query;
     const { id } = req.params;
-    console.log({ id, timeframe });
     let dao = await DAO.findOne({ id: req.params.id });
-    console.log({ dao });
     if (!dao) {
       dao = { history: [] };
     }
@@ -127,19 +125,18 @@ exports.getBalanceHistory = async (req, res) => {
       })),
       timeframe
     );
-    console.log({ formattedHistory });
     res.json(
       formattedHistory.map((balanceHistory) => {
         balanceHistory.value = formatAmount(balanceHistory.value, {
-          denomination: 'aettos',
-          targetDenomination: 'ae',
+          denomination: "aettos",
+          targetDenomination: "ae",
         });
         return balanceHistory;
       })
     );
   } catch (error) {
-    console.error('Error getting balance history', error);
-    res.status(500).send({ message: 'Error getting balance history' });
+    console.error("Error getting balance history", error);
+    res.status(500).send({ message: "Error getting balance history" });
   }
 };
 
@@ -159,8 +156,8 @@ exports.getMembersHistory = async (req, res) => {
     );
     res.json(formattedHistory);
   } catch (error) {
-    console.error('Error getting members history', error);
-    res.status(500).send({ message: 'Error getting members history' });
+    console.error("Error getting members history", error);
+    res.status(500).send({ message: "Error getting members history" });
   }
 };
 
@@ -180,8 +177,8 @@ exports.getProposalsHistory = async (req, res) => {
     );
     res.json(formattedHistory);
   } catch (error) {
-    console.error('Error getting proposals history', error);
-    res.status(500).send({ message: 'Error getting proposals history' });
+    console.error("Error getting proposals history", error);
+    res.status(500).send({ message: "Error getting proposals history" });
   }
 };
 
@@ -207,8 +204,8 @@ exports.getTransactionsHistory = async (req, res) => {
         transactionHistory.push({
           date,
           amount: formatAmount(amount, {
-            denomination: 'aettos',
-            targetDenomination: 'ae',
+            denomination: "aettos",
+            targetDenomination: "ae",
           }),
           sender,
           receiver,
@@ -217,8 +214,8 @@ exports.getTransactionsHistory = async (req, res) => {
     });
     res.json(transactionHistory);
   } catch (error) {
-    console.error('Error getting transaction history', error);
-    res.status(500).send({ message: 'Error getting transactioin history' });
+    console.error("Error getting transaction history", error);
+    res.status(500).send({ message: "Error getting transactioin history" });
   }
 };
 
@@ -235,7 +232,7 @@ exports.createDao = async (req, res) => {
       currentBalance,
     } = req.body;
     if (!name || !id || !members) {
-      return res.status(400).send({ message: 'Missing required fields' });
+      return res.status(400).send({ message: "Missing required fields" });
     }
     const dao = await DAO.create({
       name,
@@ -255,10 +252,10 @@ exports.createDao = async (req, res) => {
       ],
     });
     await notifyUsersOnDaoCreation({ name, id, description, image });
-    res.status(201).send({ message: 'DAO created successfully', dao });
+    res.status(201).send({ message: "DAO created successfully", dao });
   } catch (error) {
-    console.error('Error creating DAO', error);
-    res.status(500).send({ message: 'Error creating DAO' });
+    console.error("Error creating DAO", error);
+    res.status(500).send({ message: "Error creating DAO" });
   }
 };
 
@@ -271,12 +268,12 @@ exports.updateDao = async (req, res) => {
     await saveDao(daoId, daoInfo);
 
     if (!updatedDao) {
-      return res.status(404).send({ message: 'DAO not found' });
+      return res.status(404).send({ message: "DAO not found" });
     }
-    res.send({ message: 'DAO successfully updated', dao: updatedDao });
+    res.send({ message: "DAO successfully updated", dao: updatedDao });
   } catch (error) {
-    console.error('Error updating DAO', error);
-    res.status(500).send({ message: 'Error updating DAO' });
+    console.error("Error updating DAO", error);
+    res.status(500).send({ message: "Error updating DAO" });
   }
 };
 
@@ -284,9 +281,10 @@ async function saveDao(id, daoInfo) {
   const { members, balance, currentProposalsCount } = daoInfo;
   const dao = await DAO.findOne({ id });
   if (
-    dao.members.length == members.length &&
-    dao.balance == balance &&
-    dao.currentProposalsCount == currentProposalsCount
+    (!members || dao.members.length == members.length) &&
+    (!balance || dao.balance == balance) &&
+    (currentProposalsCount ||
+      dao.currentProposalsCount == currentProposalsCount)
   ) {
     return;
   }
@@ -313,10 +311,10 @@ async function saveDao(id, daoInfo) {
 
 const transactionCallback = (payload, error) => {
   if (error) {
-    console.error('Error:', error);
+    console.error("Error:", error);
     return;
   }
-  if (payload.tx.function == 'createdDAO') {
+  if (payload.tx.function == "createdDAO") {
     const { micro_time, hash } = payload;
     const {
       arguments: function_args,
@@ -360,14 +358,14 @@ const transactionCallback = (payload, error) => {
           proposalsCount: 0,
         },
       ],
-    }).catch((error) => console.error('Error creating dao', error));
+    }).catch((error) => console.error("Error creating dao", error));
     notifyUsersOnDaoCreation(newDao);
   }
 };
 
 handleDaoTransaction = async (payload, error) => {
   if (error) {
-    console.error('Error:', error);
+    console.error("Error:", error);
     return;
   }
   console.log(payload);
@@ -383,7 +381,7 @@ const getDAOs = async () => {
   for (let i = 0; i < res.decodedResult.length; i++) {
     let dao = res.decodedResult[i];
     for (let key in dao) {
-      if (typeof dao[key] == 'bigint') {
+      if (typeof dao[key] == "bigint") {
         dao[key] = Number(dao[key]);
       }
     }
@@ -419,7 +417,7 @@ const getDAOs = async () => {
             proposalsCount: currentProposalsCount ?? 0,
           },
         ],
-      }).catch((error) => console.error('Error creating dao', error));
+      }).catch((error) => console.error("Error creating dao", error));
     } else {
       await DAO.updateOne({ id }, { name, image, description });
       if (currentProposalsCount > existingDao.currentProposalsCount) {
@@ -446,6 +444,6 @@ const getDAOs = async () => {
 //   getDAOs();
 // };
 
-cron.schedule('*/50 * * * * *', () => {
+cron.schedule("*/5 * * * * *", () => {
   getDAOs();
 });
