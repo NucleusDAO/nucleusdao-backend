@@ -5,6 +5,7 @@ exports.getAeternityPrice = async (req, res) => {
     const response = await axios.get(
       'https://api.coingecko.com/api/v3/simple/price?ids=aeternity&vs_currencies=usd'
     );
+    console.log(response.data);
     const price = response.data.aeternity.usd;
     res.send({ price: price });
   } catch (error) {
